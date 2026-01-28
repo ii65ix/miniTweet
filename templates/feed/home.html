@@ -2,6 +2,19 @@
 {% block title %}الصفحة الرئيسية{% endblock %}
 
 {% block content %}
+  <section class="top-search">
+    <form class="search-form" method="get" action="{% url 'home' %}">
+      <input
+        class="search-input"
+        type="search"
+        name="q"
+        placeholder="ابحث عن تغريدة أو اسم مستخدم..."
+        value="{{ query|default:'' }}"
+      />
+      <button class="btn primary" type="submit">بحث</button>
+    </form>
+  </section>
+
   <section class="hero">
     <div class="hero-text">
       <h1>شارك أفكارك بتغريدات جميلة</h1>
@@ -55,7 +68,6 @@
   <section class="timeline">
     <div class="section-title">
       <h2>آخر التغريدات</h2>
-      <span class="subtle">تحديث مباشر عند كل نشر</span>
     </div>
     <div class="tweets-grid">
       {% for tweet in tweets %}

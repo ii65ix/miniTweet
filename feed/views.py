@@ -4,19 +4,27 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.db.models import Q
 
 from .forms import SignUpForm, TweetForm
 from .models import Tweet
 
 
 def home(request):
+    query = request.GET.get("q", "").strip()
     tweets = Tweet.objects.select_related("author")
+    if query:
+        tweets = tweets.filter(
+            Q(content__icontains=query)
+            | Q(author__username__icontains=query)
+        )
     form = TweetForm()
     return render(
         request,
         "feed/home.html",
         {
             "tweets": tweets,
+            "query": query,
             "form": form,
         },
     )
