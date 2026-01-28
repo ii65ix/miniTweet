@@ -261,6 +261,11 @@ a {
   gap: 16px;
 }
 
+.tweets-list {
+  display: grid;
+  gap: 18px;
+}
+
 .tweet-card {
   background: rgba(12, 16, 36, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -306,6 +311,29 @@ a {
   line-height: 1.6;
   color: #f0f2ff;
 }
+
+.tweet-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.like-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #e0e7ff;
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.like-btn .count {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
 
 .empty {
   text-align: center;

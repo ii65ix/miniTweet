@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path("", views.home, name="home"),
     path("tweet/", views.create_tweet, name="create_tweet"),
+    path("tweet/<int:tweet_id>/like/", views.toggle_like, name="toggle_like"),
     path("signup/", views.SignUpView.as_view(), name="signup"),
     path("login/", views.CustomLoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),

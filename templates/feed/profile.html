@@ -26,9 +26,9 @@
       <h2>تغريداتي</h2>
       <span class="subtle">{{ tweets.count }} تغريدة</span>
     </div>
-    <div class="tweets-grid">
+    <div class="tweets-list">
       {% for tweet in tweets %}
-        <article class="tweet-card in-view">
+        <article class="tweet-card in-view" id="tweet-{{ tweet.id }}">
           <div class="tweet-header">
             <div class="avatar">{{ user.username|first|upper }}</div>
             <div>
@@ -37,6 +37,20 @@
             </div>
           </div>
           <p class="tweet-content">{{ tweet.content }}</p>
+          <div class="tweet-actions">
+            <form class="js-like-form" method="post" action="{% url 'toggle_like' tweet.id %}" data-tweet-id="{{ tweet.id }}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}#tweet-{{ tweet.id }}" />
+              <button class="btn ghost like-btn" type="submit">
+                {% if tweet.id in liked_ids %}
+                  ❤️ أعجبتني
+                {% else %}
+                  🤍 لايك
+                {% endif %}
+                <span class="count like-count">{{ tweet.likes.count }}</span>
+              </button>
+            </form>
+          </div>
         </article>
       {% empty %}
         <div class="card empty">
