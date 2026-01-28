@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}إنشاء حساب{% endblock %}
+
+{% block content %}
+  <div class="auth-layout">
+    <div class="card auth-card">
+      <h1>إنشاء حساب جديد</h1>
+      <p class="subtle">انضم للمجتمع وابدأ نشر تغريداتك.</p>
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="message">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="form-group">
+          <label for="id_username">اسم المستخدم</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_email">البريد الإلكتروني</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_password1">كلمة المرور</label>
+          {{ form.password1 }}
+          {{ form.password1.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_password2">تأكيد كلمة المرور</label>
+          {{ form.password2 }}
+          {{ form.password2.errors }}
+        </div>
+        <button class="btn primary full" type="submit">إنشاء الحساب</button>
+      </form>
+      <p class="form-footer">
+        لديك حساب؟ <a href="{% url 'login' %}">تسجيل دخول</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

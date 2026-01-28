@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}الصفحة الرئيسية{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <div class="hero-text">
+      <h1>شارك أفكارك بتغريدات جميلة</h1>
+      <p>بوستات قصيرة، تصميم أنيق، وتجربة سلسة مع أنيميشن خفيف.</p>
+      {% if not user.is_authenticated %}
+        <div class="hero-actions">
+          <a class="btn primary" href="{% url 'signup' %}">ابدأ الآن</a>
+          <a class="btn ghost" href="{% url 'login' %}">تسجيل دخول</a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="hero-card">
+      <div class="stat">
+        <span class="stat-value">{{ tweets.count }}</span>
+        <span class="stat-label">تغريدة</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ user.is_authenticated|yesno:"✓,✦" }}</span>
+        <span class="stat-label">حساب نشط</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="composer">
+    {% if user.is_authenticated %}
+      <form class="composer-form" method="post" action="{% url 'create_tweet' %}">
+        {% csrf_token %}
+        <div class="card">
+          <div class="card-header">
+            <h2>اكتب تغريدة جديدة</h2>
+            <span class="chip">حد 280 حرف</span>
+          </div>
+          {{ form.content }}
+          <div class="card-actions">
+            <button class="btn primary" type="submit">نشر التغريدة</button>
+          </div>
+        </div>
+      </form>
+    {% else %}
+      <div class="card callout">
+        <h2>سجّل الدخول لكتابة تغريداتك</h2>
+        <p>أنشئ حسابك خلال ثواني وابدأ النشر.</p>
+        <div class="card-actions">
+          <a class="btn primary" href="{% url 'signup' %}">إنشاء حساب</a>
+          <a class="btn ghost" href="{% url 'login' %}">تسجيل دخول</a>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="timeline">
+    <div class="section-title">
+      <h2>آخر التغريدات</h2>
+      <span class="subtle">تحديث مباشر عند كل نشر</span>
+    </div>
+    <div class="tweets-grid">
+      {% for tweet in tweets %}
+        <article class="tweet-card fade-up">
+          <div class="tweet-header">
+            <div class="avatar">{{ tweet.author.username|first|upper }}</div>
+            <div>
+              <h3>{{ tweet.author.username }}</h3>
+              <span class="tweet-date">{{ tweet.created_at|date:"Y/m/d H:i" }}</span>
+            </div>
+          </div>
+          <p class="tweet-content">{{ tweet.content }}</p>
+        </article>
+      {% empty %}
+        <div class="card empty">
+          <h3>لا توجد تغريدات بعد</h3>
+          <p>كن أول من ينشر في هذا المكان الجميل.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

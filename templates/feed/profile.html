@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}حسابي{% endblock %}
+
+{% block content %}
+  <section class="profile-hero">
+    <div class="card profile-card">
+      <div class="profile-header">
+        <div class="avatar large">{{ user.username|first|upper }}</div>
+        <div>
+          <h1>{{ user.username }}</h1>
+          <p class="subtle">{{ user.email|default:"بدون بريد مسجل" }}</p>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <a class="btn ghost" href="{% url 'home' %}">العودة للتغريدات</a>
+        <form method="post" action="{% url 'delete_account' %}" onsubmit="return confirm('هل أنت متأكد من حذف الحساب؟');">
+          {% csrf_token %}
+          <button class="btn danger" type="submit">حذف الحساب</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline">
+    <div class="section-title">
+      <h2>تغريداتي</h2>
+      <span class="subtle">{{ tweets.count }} تغريدة</span>
+    </div>
+    <div class="tweets-grid">
+      {% for tweet in tweets %}
+        <article class="tweet-card in-view">
+          <div class="tweet-header">
+            <div class="avatar">{{ user.username|first|upper }}</div>
+            <div>
+              <h3>{{ user.username }}</h3>
+              <span class="tweet-date">{{ tweet.created_at|date:"Y/m/d H:i" }}</span>
+            </div>
+          </div>
+          <p class="tweet-content">{{ tweet.content }}</p>
+        </article>
+      {% empty %}
+        <div class="card empty">
+          <h3>لا توجد تغريدات لك بعد</h3>
+          <p>ابدأ بكتابة أول تغريدة من الصفحة الرئيسية.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

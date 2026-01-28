@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}تسجيل دخول{% endblock %}
+
+{% block content %}
+  <div class="auth-layout">
+    <div class="card auth-card">
+      <h1>تسجيل الدخول</h1>
+      <p class="subtle">أهلا بعودتك! أدخل بياناتك للمتابعة.</p>
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="message">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="form-group">
+          <label for="id_username">اسم المستخدم</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_password">كلمة المرور</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+        <button class="btn primary full" type="submit">دخول</button>
+      </form>
+      <p class="form-footer">
+        ما عندك حساب؟ <a href="{% url 'signup' %}">أنشئ حساب الآن</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
