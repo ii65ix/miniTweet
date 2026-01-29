@@ -1,42 +1,41 @@
 {% extends 'base.html' %}
-{% block title %}حسابي{% endblock %}
+{% block title %}ملف {{ profile_user.username }}{% endblock %}
 
 {% block content %}
   <section class="profile-hero">
     <div class="card profile-card">
       <div class="profile-header">
-        <div class="avatar large">{{ user.username|first|upper }}</div>
+        <div class="avatar large">{{ profile_user.username|first|upper }}</div>
         <div>
-          <h1>{{ user.username }}</h1>
-          <p class="subtle">{{ user.email|default:"بدون بريد مسجل" }}</p>
+          <h1>{{ profile_user.username }}</h1>
+          <p class="subtle">{{ profile_user.email|default:"بدون بريد مسجل" }}</p>
         </div>
       </div>
       <div class="profile-actions">
+        {% if user.is_authenticated and user.username == profile_user.username %}
+          <a class="btn ghost" href="{% url 'profile' %}">حسابي</a>
+        {% endif %}
         <a class="btn ghost" href="{% url 'home' %}">العودة للتغريدات</a>
-        <form method="post" action="{% url 'delete_account' %}" onsubmit="return confirm('هل أنت متأكد من حذف الحساب؟');">
-          {% csrf_token %}
-          <button class="btn danger" type="submit">حذف الحساب</button>
-        </form>
       </div>
     </div>
   </section>
 
   <section class="timeline">
     <div class="section-title">
-      <h2>تغريداتي</h2>
+      <h2>تغريدات {{ profile_user.username }}</h2>
       <span class="subtle">{{ tweets.count }} تغريدة</span>
     </div>
     <div class="tweets-list">
       {% for tweet in tweets %}
         <article class="tweet-card in-view" id="tweet-{{ tweet.id }}">
           <div class="tweet-header">
-            <a class="avatar" href="{% url 'user_profile' user.username %}">
-              {{ user.username|first|upper }}
+            <a class="avatar" href="{% url 'user_profile' profile_user.username %}">
+              {{ profile_user.username|first|upper }}
             </a>
             <div>
               <h3>
-                <a class="user-link" href="{% url 'user_profile' user.username %}">
-                  {{ user.username }}
+                <a class="user-link" href="{% url 'user_profile' profile_user.username %}">
+                  {{ profile_user.username }}
                 </a>
               </h3>
               <span class="tweet-date">{{ tweet.created_at|date:"Y/m/d H:i" }}</span>
@@ -56,17 +55,19 @@
                 <span class="count like-count">{{ tweet.likes.count }}</span>
               </button>
             </form>
-            <form method="post" action="{% url 'delete_tweet' tweet.id %}" onsubmit="return confirm('هل أنت متأكد من حذف التغريدة؟');">
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{{ request.get_full_path }}#tweet-{{ tweet.id }}" />
-              <button class="btn ghost danger-outline" type="submit">حذف</button>
-            </form>
+            {% if user.is_authenticated and tweet.author_id == user.id %}
+              <form method="post" action="{% url 'delete_tweet' tweet.id %}" onsubmit="return confirm('هل أنت متأكد من حذف التغريدة؟');">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}#tweet-{{ tweet.id }}" />
+                <button class="btn ghost danger-outline" type="submit">حذف</button>
+              </form>
+            {% endif %}
           </div>
         </article>
       {% empty %}
         <div class="card empty">
-          <h3>لا توجد تغريدات لك بعد</h3>
-          <p>ابدأ بكتابة أول تغريدة من الصفحة الرئيسية.</p>
+          <h3>لا توجد تغريدات بعد</h3>
+          <p>هذا المستخدم لم ينشر تغريدات حتى الآن.</p>
         </div>
       {% endfor %}
     </div>

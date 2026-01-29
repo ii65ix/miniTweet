@@ -73,9 +73,15 @@
       {% for tweet in tweets %}
         <article class="tweet-card fade-up" id="tweet-{{ tweet.id }}">
           <div class="tweet-header">
-            <div class="avatar">{{ tweet.author.username|first|upper }}</div>
+            <a class="avatar" href="{% url 'user_profile' tweet.author.username %}">
+              {{ tweet.author.username|first|upper }}
+            </a>
             <div>
-              <h3>{{ tweet.author.username }}</h3>
+              <h3>
+                <a class="user-link" href="{% url 'user_profile' tweet.author.username %}">
+                  {{ tweet.author.username }}
+                </a>
+              </h3>
               <span class="tweet-date">{{ tweet.created_at|date:"Y/m/d H:i" }}</span>
             </div>
           </div>
@@ -93,6 +99,13 @@
                 <span class="count like-count">{{ tweet.likes.count }}</span>
               </button>
             </form>
+            {% if user.is_authenticated and tweet.author_id == user.id %}
+              <form method="post" action="{% url 'delete_tweet' tweet.id %}" onsubmit="return confirm('هل أنت متأكد من حذف التغريدة؟');">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}#tweet-{{ tweet.id }}" />
+                <button class="btn ghost danger-outline" type="submit">حذف</button>
+              </form>
+            {% endif %}
           </div>
         </article>
       {% empty %}

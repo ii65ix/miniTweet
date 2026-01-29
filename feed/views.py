@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.contrib.auth.models import User
 
 from .forms import SignUpForm, TweetForm
 from .models import Like, Tweet
@@ -74,6 +75,16 @@ def toggle_like(request, tweet_id):
     return redirect(request.POST.get("next") or "home")
 
 
+@login_required
+def delete_tweet(request, tweet_id):
+    if request.method != "POST":
+        return redirect("home")
+
+    tweet = get_object_or_404(Tweet, id=tweet_id, author=request.user)
+    tweet.delete()
+    return redirect(request.POST.get("next") or "home")
+
+
 class SignUpView(CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy("home")
@@ -108,6 +119,30 @@ def profile(request):
         request,
         "feed/profile.html",
         {
+            "tweets": tweets,
+            "liked_ids": liked_ids,
+        },
+    )
+
+
+def user_profile(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    tweets = (
+        Tweet.objects.filter(author=profile_user)
+        .select_related("author")
+        .prefetch_related("likes")
+    )
+    liked_ids = set()
+    if request.user.is_authenticated:
+        liked_ids = set(
+            Like.objects.filter(user=request.user, tweet__in=tweets)
+            .values_list("tweet_id", flat=True)
+        )
+    return render(
+        request,
+        "feed/user_profile.html",
+        {
+            "profile_user": profile_user,
             "tweets": tweets,
             "liked_ids": liked_ids,
         },
