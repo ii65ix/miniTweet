@@ -207,6 +207,19 @@ a {
   justify-content: flex-end;
 }
 
+.file-row {
+  margin-top: 12px;
+}
+
+.file-row input[type="file"] {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  background: rgba(8, 12, 26, 0.4);
+  color: #dbe1ff;
+  padding: 10px 12px;
+}
+
 .callout {
   text-align: center;
 }
@@ -301,6 +314,19 @@ a {
   font-weight: 700;
 }
 
+.avatar-image {
+  background: transparent;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.avatar-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .user-link {
   color: #eef1ff;
 }
@@ -318,6 +344,21 @@ a {
   font-size: 16px;
   line-height: 1.6;
   color: #f0f2ff;
+}
+
+.tweet-media {
+  margin-top: 10px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 12, 26, 0.6);
+}
+
+.tweet-media img {
+  width: 100%;
+  display: block;
+  max-height: 420px;
+  object-fit: cover;
 }
 
 .tweet-actions {
@@ -410,6 +451,51 @@ a {
   flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-start;
+}
+
+.profile-upload {
+  margin-top: 12px;
+}
+
+.profile-upload .file-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  background: rgba(8, 12, 26, 0.4);
+  color: #dbe1ff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.file-label:hover {
+  transform: translateY(-1px);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+.file-icon {
+  font-size: 16px;
 }
 
 .form-group {

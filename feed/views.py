@@ -8,8 +8,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
 
-from .forms import SignUpForm, TweetForm
-from .models import Like, Tweet
+from .forms import ProfileImageForm, SignUpForm, TweetForm
+from .models import Like, Profile, Tweet
 
 
 def home(request):
@@ -44,7 +44,7 @@ def create_tweet(request):
     if request.method != "POST":
         return redirect("home")
 
-    form = TweetForm(request.POST)
+    form = TweetForm(request.POST, request.FILES)
     if form.is_valid():
         tweet = form.save(commit=False)
         tweet.author = request.user
@@ -106,6 +106,18 @@ class CustomLoginView(LoginView):
 
 @login_required
 def profile(request):
+    profile_obj, _ = Profile.objects.get_or_create(user=request.user)
+    if request.method == "POST" and "image" in request.FILES:
+        image_form = ProfileImageForm(
+            request.POST,
+            request.FILES,
+            instance=profile_obj,
+        )
+        if image_form.is_valid():
+            image_form.save()
+        return redirect("profile")
+
+    image_form = ProfileImageForm(instance=profile_obj)
     tweets = (
         Tweet.objects.filter(author=request.user)
         .select_related("author")
@@ -121,12 +133,15 @@ def profile(request):
         {
             "tweets": tweets,
             "liked_ids": liked_ids,
+            "image_form": image_form,
+            "profile_obj": profile_obj,
         },
     )
 
 
 def user_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
+    profile_obj, _ = Profile.objects.get_or_create(user=profile_user)
     tweets = (
         Tweet.objects.filter(author=profile_user)
         .select_related("author")
@@ -143,6 +158,7 @@ def user_profile(request, username):
         "feed/user_profile.html",
         {
             "profile_user": profile_user,
+            "profile_obj": profile_obj,
             "tweets": tweets,
             "liked_ids": liked_ids,
         },

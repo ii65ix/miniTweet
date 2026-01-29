@@ -5,7 +5,13 @@
   <section class="profile-hero">
     <div class="card profile-card">
       <div class="profile-header">
-        <div class="avatar large">{{ profile_user.username|first|upper }}</div>
+        {% if profile_obj.image %}
+          <div class="avatar large avatar-image">
+            <img src="{{ profile_obj.image.url }}" alt="صورة الحساب" />
+          </div>
+        {% else %}
+          <div class="avatar large">{{ profile_user.username|first|upper }}</div>
+        {% endif %}
         <div>
           <h1>{{ profile_user.username }}</h1>
           <p class="subtle">{{ profile_user.email|default:"بدون بريد مسجل" }}</p>
@@ -42,6 +48,11 @@
             </div>
           </div>
           <p class="tweet-content">{{ tweet.content }}</p>
+          {% if tweet.image %}
+            <div class="tweet-media">
+              <img src="{{ tweet.image.url }}" alt="صورة التغريدة" />
+            </div>
+          {% endif %}
           <div class="tweet-actions">
             <form class="js-like-form" method="post" action="{% url 'toggle_like' tweet.id %}" data-tweet-id="{{ tweet.id }}">
               {% csrf_token %}

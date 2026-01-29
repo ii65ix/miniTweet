@@ -40,7 +40,7 @@
 
   <section class="composer">
     {% if user.is_authenticated %}
-      <form class="composer-form" method="post" action="{% url 'create_tweet' %}">
+      <form class="composer-form" method="post" action="{% url 'create_tweet' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card">
           <div class="card-header">
@@ -48,6 +48,19 @@
             <span class="chip">حد 280 حرف</span>
           </div>
           {{ form.content }}
+          <div class="file-row">
+            <label class="file-label" for="id_tweet_image">
+              <span class="file-icon">📷</span>
+              اختر صورة
+            </label>
+            <input
+              id="id_tweet_image"
+              class="file-input"
+              type="file"
+              name="image"
+              accept="image/*"
+            />
+          </div>
           <div class="card-actions">
             <button class="btn primary" type="submit">نشر التغريدة</button>
           </div>
@@ -86,6 +99,11 @@
             </div>
           </div>
           <p class="tweet-content">{{ tweet.content }}</p>
+          {% if tweet.image %}
+            <div class="tweet-media">
+              <img src="{{ tweet.image.url }}" alt="صورة التغريدة" />
+            </div>
+          {% endif %}
           <div class="tweet-actions">
             <form class="js-like-form" method="post" action="{% url 'toggle_like' tweet.id %}" data-tweet-id="{{ tweet.id }}">
               {% csrf_token %}

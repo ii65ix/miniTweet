@@ -2,20 +2,20 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Tweet
+from .models import Profile, Tweet
 
 
 class TweetForm(forms.ModelForm):
     class Meta:
         model = Tweet
-        fields = ["content"]
+        fields = ["content", "image"]
         widgets = {
             "content": forms.Textarea(
                 attrs={
                     "rows": 3,
                     "placeholder": "اكتب تغريدة جديدة...",
                 }
-            )
+            ),
         }
 
 
@@ -26,4 +26,9 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ("username", "email", "password1", "password2")
 
+
+class ProfileImageForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["image"]
 

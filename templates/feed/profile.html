@@ -5,12 +5,35 @@
   <section class="profile-hero">
     <div class="card profile-card">
       <div class="profile-header">
-        <div class="avatar large">{{ user.username|first|upper }}</div>
+        {% if profile_obj.image %}
+          <div class="avatar large avatar-image">
+            <img src="{{ profile_obj.image.url }}" alt="صورة الحساب" />
+          </div>
+        {% else %}
+          <div class="avatar large">{{ user.username|first|upper }}</div>
+        {% endif %}
         <div>
           <h1>{{ user.username }}</h1>
           <p class="subtle">{{ user.email|default:"بدون بريد مسجل" }}</p>
         </div>
       </div>
+      <form class="profile-upload" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="file-row">
+          <label class="file-label" for="id_profile_image">
+            <span class="file-icon">📷</span>
+            اختر صورة
+          </label>
+          <input
+            id="id_profile_image"
+            class="file-input"
+            type="file"
+            name="image"
+            accept="image/*"
+          />
+          <button class="btn primary" type="submit">تحديث الصورة</button>
+        </div>
+      </form>
       <div class="profile-actions">
         <a class="btn ghost" href="{% url 'home' %}">العودة للتغريدات</a>
         <form method="post" action="{% url 'delete_account' %}" onsubmit="return confirm('هل أنت متأكد من حذف الحساب؟');">
@@ -43,6 +66,11 @@
             </div>
           </div>
           <p class="tweet-content">{{ tweet.content }}</p>
+          {% if tweet.image %}
+            <div class="tweet-media">
+              <img src="{{ tweet.image.url }}" alt="صورة التغريدة" />
+            </div>
+          {% endif %}
           <div class="tweet-actions">
             <form class="js-like-form" method="post" action="{% url 'toggle_like' tweet.id %}" data-tweet-id="{{ tweet.id }}">
               {% csrf_token %}
